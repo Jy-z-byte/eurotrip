@@ -516,7 +516,7 @@
         function processText(text) {
             if (!text) return '';
             return text.replace(regex, (match) => {
-                return `<a href="https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(match)}" target="_blank" class="keyword-link">${match}</a>`;
+                return `<a href="xhsdiscover://search/result?keyword=${encodeURIComponent(match)}" target="_blank" class="keyword-link">${match}</a>`;
             });
         }
 
