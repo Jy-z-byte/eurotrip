@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EUROPE TRAVEL JOURNAL</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fdfcf8;
+            --text-main: #2c2c2c;
+            --text-muted: #737373;
+            --accent: #9f8166;
+            --border: #eae8e1;
+            --font-serif: 'Noto Serif SC', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+        /* Progress Bar (Dynamic) */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            z-index: 1000;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Interactive Links */
+        .keyword-link {
+            position: relative;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px dashed var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .keyword-link:hover {
+            color: var(--accent);
+            background: rgba(159, 129, 102, 0.1);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .keyword-link::after {
+            content: '↗';
+            font-size: 0.7em;
+            margin-left: 2px;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            transform: translateY(-2px);
+        }
+
+        .keyword-link:hover::after {
+            opacity: 1;
+        }
+
+        /* Hero Section (Parallax ready) */
+        .hero {
+            height: 65vh;
+            min-height: 500px;
+            background: url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1920&q=80') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .hero-content .label {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: block;
+            opacity: 0.9;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0 0 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Navigation (Sticky & Interactive) */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: rgba(253, 252, 248, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            overflow-x: auto;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            transition: color 0.3s, transform 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Prep Section */
+        .prep-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 60px 0;
+        }
+
+        .prep-card {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .prep-card:hover {
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transform: translateY(-3px);
+        }
+
+        .prep-card h3 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0 0 15px;
+        }
+
+        .prep-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Country Header */
+        .country-header {
+            margin: 100px 0 60px;
+            text-align: center;
+        }
+
+        .country-header .label {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .country-header h2 {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            margin: 10px 0 15px;
+            color: var(--text-main);
+            transition: transform 0.5s ease;
+        }
+
+        .country-header:hover h2 {
+            transform: scale(1.02);
+        }
+
+        .country-header .theme {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .country-header .strategy {
+            text-align: left;
+            background: #fff;
+            padding: 35px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.8;
+            position: relative;
+            transition: box-shadow 0.4s ease;
+            border-radius: 4px;
+        }
+
+        .country-header .strategy:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .country-header .strategy::before {
+            content: 'STRATEGY';
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            background: #fff;
+            padding: 0 10px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+        }
+
+        /* Day Card */
+        .day-card {
+            margin-bottom: 80px;
+        }
+
+        /* Country Hero Image */
+        .country-hero-container {
+            margin: 40px 0 60px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            height: 300px;
+        }
+
+        .country-hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(10%) contrast(95%);
+            transition: transform 2s ease, filter 1s ease;
+        }
+
+        .country-hero-container:hover .country-hero-image {
+            transform: scale(1.05);
+            filter: sepia(0) contrast(105%);
+        }
+
+        .day-header h3 {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            margin: 0 0 10px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .day-header .meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            display: block;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        /* Timeline Interactive */
+        .timeline {
+            margin-bottom: 35px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 18px;
+            align-items: baseline;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(8px);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(159, 129, 102, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(159, 129, 102, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(159, 129, 102, 0);
+            }
+        }
+
+        .timeline-item .time {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 70px;
+            position: relative;
+        }
+
+        .timeline-item .time::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .timeline-item .text {
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-left: 25px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            background: #fff;
+            padding: 30px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+            transition: box-shadow 0.4s ease;
+            border-radius: 8px;
+        }
+
+        .info-grid:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-item .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+        }
+
+        .info-item .content {
+            font-size: 0.95rem;
+        }
+
+        /* Tips Block */
+        .tips-block {
+            padding: 20px;
+            border: 1px solid rgba(159, 129, 102, 0.2);
+            background: rgba(159, 129, 102, 0.03);
+            border-radius: 8px;
+            transition: background 0.4s ease;
+        }
+
+        .tips-block:hover {
+            background: rgba(159, 129, 102, 0.06);
+        }
+
+        .tips-block p {
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+            color: #5c5c5c;
+        }
+
+        .tips-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .tips-block strong {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-right: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                background-attachment: fixed;
+            }
+
+            /* Hardware accelerated parallax */
+            .hero h1 {
+                font-size: 4.5rem;
+            }
+
+            .prep-section {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .country-hero-container {
+                height: 400px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .info-item.full {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="progress-bar"></div>
+    <div id="app"></div>
+
+    <script>
+        // Fallback image in case Unsplash fails
+        const fallbackImg = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80";
+
+        // 1 verified Unsplash image per country
+        const countryImages = {
+            "spain": "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1200&q=80",
+            "italy": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+            "france": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1200&q=80",
+            "uk": "https://images.unsplash.com/photo-1513635269975-59693e0cd156?auto=format&fit=crop&w=1200&q=80"
+        };
+
+        const keywords = [
+            "加泰罗尼亚广场", "兰布拉大道", "波盖利亚市场", "哥特区", "圣家族大教堂",
+            "圣保罗医院", "奎尔公园", "巴特罗之家", "米拉之家", "巴塞罗那塔海滩",
+            "蒙锥克山", "丽池公园", "水晶宫", "太阳门广场", "马约尔广场", "普拉多美术馆",
+            "塞维利亚王宫", "塞维利亚大教堂", "吉拉达塔", "西班牙广场", "弗拉明戈秀",
+            "斗兽场", "帕拉蒂尼山", "威尼斯广场", "梵蒂冈博物馆", "西斯廷教堂",
+            "圣彼得大教堂", "圣天使堡", "鲜花广场", "四河喷泉", "特雷维喷泉",
+            "万神殿", "真理之口", "圣母百花大教堂", "乌菲兹美术馆", "米开朗基罗广场",
+            "学院美术馆", "比萨斜塔", "英国人漫步大道", "蒙特卡洛赌场", "亲王宫",
+            "凯旋门", "亚历山大三世桥", "卢浮宫", "杜乐丽花园", "巴黎歌剧院",
+            "老佛爷", "凡尔赛宫", "镜厅", "蒙马特高地", "爱墙", "圣心大教堂",
+            "奥赛博物馆", "花神咖啡馆", "莎士比亚书店", "巴黎圣母院", "大英博物馆",
+            "考文特花园", "威斯敏斯特大教堂", "大本钟", "白金汉宫", "伦敦眼",
+            "伦敦塔", "伦敦塔桥", "博罗市场", "9¾站台", "爱丁堡城堡", "皇家一英里",
+            "圣吉尔斯大教堂", "维多利亚街", "大象咖啡馆", "卡尔顿山", "尼斯湖",
+            "格伦科峡谷"
+        ].sort((a, b) => b.length - a.length);
+
+        const regex = new RegExp(keywords.join('|'), 'g');
+        function processText(text) {
+            if (!text) return '';
+            return text.replace(regex, (match) => {
+                return `<a href="https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(match)}" target="_blank" class="keyword-link">${match}</a>`;
+            });
+        }
+
+        const itinerary = {
+            title: "Welcome to Europe",
+            subtitle: "5月28日入境 — 6月18日离境",
+            route: "巴塞罗那 ➔ 马德里 ➔ 塞维利亚 ➔ 罗马 ➔ 佛罗伦萨 ➔ 尼斯 ➔ 摩纳哥 ➔ 巴黎 ➔ 伦敦 ➔ 爱丁堡",
+            prep: [
+                { label: "WEATHER", desc: "5月底-6月中旬是最美季节。南欧(西/意)约28-32°C，阳光刺眼，必带高倍防晒与墨镜；巴黎伦敦早晚温差大(12-22°C)，需准备薄毛衣与防风外套；苏格兰高地多雨，防风防水冲锋衣是救命神器。" },
+                { label: "SECURITY", desc: "欧洲老城多为碎石板路，必须准备厚底缓震运动鞋；放弃所有敞口包，使用带有防盗锁扣的贴身斜挎包；护照原件锁在酒店，只带复印件出门。" }
+            ],
+            countries: [
+                {
+                    id: "spain",
+                    name: "西班牙",
+                    theme: "高迪的狂想曲与安达卢西亚之魂",
+                    strategy: "巴塞罗那感受现代主义建筑视觉冲击；以马德里为大本营连住，利用AVE高铁轻装一天闪击塞维利亚，免去拉行李箱找酒店的痛苦。",
+                    days: [
+                        {
+                            day: "Day 1", date: "5/28", city: "巴塞罗那", timeline: [
+                                { time: "14:00", text: "抵达机场，前往市区酒店。长途飞行后先唤醒感官。" },
+                                { time: "16:30", text: "漫步加泰罗尼亚广场，步行进入兰布拉大道。感受城市流动的热情与喧嚣。" },
+                                { time: "18:00", text: "逛波盖利亚市场。这是欧洲最古老、最色彩斑斓的食品市场。" },
+                                { time: "20:00", text: "进入哥特区。在迷宫般狭窄小巷迷失，欣赏主教座堂夜间亮灯，听流浪艺人弹唱。" }
+                            ], transport: "BCN机场T1/T2乘 Aerobús 大巴，约35分钟直达加泰罗尼亚广场。", food: "波盖利亚市场找本地人摊位，吃伊比利亚黑猪火腿，搭配生蚝与 Cava 起泡酒。", hotel: "推荐 Eixample 扩展区，街道呈网格状，治安最好。", tips: ["SECURITY: 兰布拉大道及哥特区是小偷重灾区，双肩包务必背胸前。", "FITNESS: 约1万步，适应时差。", "SKIP: 哥特区夜游（若首日时差反应严重，逛完吃饱即可平躺）。"]
+                        },
+                        {
+                            day: "Day 2", date: "5/29", city: "巴塞罗那", timeline: [
+                                { time: "08:30", text: "参观圣家族大教堂。品味高迪“诞生立面”与“受难立面”，感受阳光透过的万花筒效果。" },
+                                { time: "11:30", text: "沿高迪大道前往圣保罗医院。世界最大新艺术风格建筑群，粉色马赛克穹顶极其浪漫。" },
+                                { time: "14:30", text: "乘公交直达奎尔公园侧门。看马赛克蜥蜴，坐在波浪形长椅俯瞰全城日落。" }
+                            ], transport: "购买 T-Casual (10次票) 地铁公交通用。地铁L2/L5至 Sagrada Família 站。", food: "午餐：圣家堂周边吃 Patatas Bravas。晚餐：找老饕餐厅吃正宗墨鱼汁海鲜饭。", tips: ["BOOKING: 圣家堂必须提前1.5个月官网抢登塔票。奎尔公园提前2周买。", "FITNESS: 较高（奎尔公园内部需爬长坡）。", "SKIP: 圣保罗医院（若圣家堂耗时过长，可仅看外观）。"]
+                        },
+                        {
+                            day: "Day 3", date: "5/30", city: "巴塞罗那", timeline: [
+                                { time: "09:00", text: "感恩大道：进入如海洋波浪般梦幻的巴特罗之家，随后看如同采石场般厚重的米拉之家。" },
+                                { time: "14:00", text: "乘地铁L4线前往巴塞罗那塔海滩。吹地中海海风，感受南欧人极度松弛感。" },
+                                { time: "17:30", text: "登蒙锥克山。在国家艺术博物馆前巨大阶梯上看魔幻喷泉音乐秀。" }
+                            ], transport: "市区刷 T-Casual 交通卡。巴塞地铁古老，注意看清方向。", food: "下午茶：老字号吃现炸西班牙油条蘸浓郁热巧克力。晚餐：海边百年餐厅吃蒜香虾。", tips: ["BOOKING: 巴特罗之家提前1-2周官网购票。", "SECURITY: 海滩边千万不要把手机压在毛巾下人就下水，会被秒偷。", "SKIP: 蒙锥克山喷泉（若想多留时间购物，可放弃爬山）。"]
+                        },
+                        {
+                            day: "Day 4", date: "5/31", city: "马德里", timeline: [
+                                { time: "08:00", text: "巴塞Sants站坐高铁赴马德里。欣赏伊比利亚半岛狂野荒漠地貌。" },
+                                { time: "11:00", text: "抵马德里Atocha站，前往酒店入住。" },
+                                { time: "12:30", text: "打卡丽池公园，拍摄全玻璃打造、阳光下晶莹剔透的水晶宫。" },
+                                { time: "15:30", text: "穿过马德里心脏太阳门广场与马约尔广场。" },
+                                { time: "17:30", text: "参观普拉多美术馆。亲眼凝视委拉斯开兹与戈雅的名作。" }
+                            ], transport: "巴塞 ➔ 马德里 (AVE高铁 2.5h)。", food: "午餐：圣米格尔市场吃 Tapas，喝 Sangria。晚餐：百年老店 Botín 吃传统烤乳猪。", hotel: "连住两晚，推荐 Atocha 火车站周边，方便次日乘车。", tips: ["BOOKING: 普拉多美术馆18:00后免票，但需排长队，建议提前买票。", "FITNESS: 较高（带行李换乘及暴走）。", "SKIP: 马约尔广场（若累了直接在丽池公园草坪上多躺一会儿）。"]
+                        },
+                        {
+                            day: "Day 5", date: "6/1", city: "塞维利亚(闪击)", timeline: [
+                                { time: "07:00", text: "马德里乘早班高铁，杀入安达卢西亚腹地。" },
+                                { time: "09:30", text: "抵塞维利亚，参观塞维利亚王宫 (权力的游戏取景地)。" },
+                                { time: "13:00", text: "参观塞维利亚大教堂，寻访哥伦布陵墓，登顶吉拉达塔。" },
+                                { time: "16:30", text: "穿过公园抵达全西班牙最美的西班牙广场。" },
+                                { time: "19:30", text: "圣克鲁斯区幽暗酒馆看一场绝望热烈的弗拉明戈秀。" },
+                                { time: "20:43", text: "乘晚班高铁返回马德里睡觉。" }
+                            ], transport: "马德里 ➔ 塞维利亚 往返 (各2.5h)。", food: "必吃：安达卢西亚名菜炖牛尾，肉质软烂；各类摩尔风味 Tapas。", tips: ["CRITICAL: AVE高铁提前1-2月买！王宫限流严，提前1个月官网买！", "FITNESS: 极限拉练，但免搬行李。", "SKIP: 登吉拉达塔（需步行上34层斜坡，体力不支可放弃）。"]
+                        }
+                    ]
+                },
+                {
+                    id: "italy",
+                    name: "意大利",
+                    theme: "帝国废墟的余晖与文艺复兴的巅峰",
+                    strategy: "罗马重塑对古罗马帝国废墟的认知；佛罗伦萨领略米开朗基罗与波提切利的美学暴击；放弃比萨长途，将时间留给托斯卡纳艳阳与T骨牛排。",
+                    days: [
+                        {
+                            day: "Day 6", date: "6/2", city: "罗马", timeline: [
+                                { time: "上午", text: "从马德里飞往罗马，感受从伊比利亚到亚平宁的跨度。" },
+                                { time: "14:30", text: "地铁至直击灵魂的斗兽场。想象角斗士与猛兽的搏杀。" },
+                                { time: "16:30", text: "深度探索古罗马遗址与帕拉蒂尼山。站在帝国废墟俯瞰全景。" },
+                                { time: "18:30", text: "步行至威尼斯广场，看被戏称为“打字机”的巨大纯白纪念堂。" }
+                            ], transport: "马德里 ➔ 罗马 (廉航2.5h)。机场乘 Leonardo Express 直达市区 Termini 站。", food: "晚餐：最正宗罗马意面——培根蛋酱意面 (绝不放奶油)。", hotel: "万神殿附近最风雅，Termini火车站西南侧性价比最高。", tips: ["BOOKING: 斗兽场与帕拉蒂尼山联票需提前30天在官网抢定时间槽。", "SECURITY: Termini车站及地铁B线上小偷极其猖獗，严阵以待。", "SKIP: 威尼斯广场（若看废墟太累，可直接去餐厅）。"]
+                        },
+                        {
+                            day: "Day 7", date: "6/3", city: "梵蒂冈 & 罗马", timeline: [
+                                { time: "08:00", text: "踏入世界最小国家。参观极度奢华的梵蒂冈博物馆，仰望西斯廷教堂壁画《创世纪》。" },
+                                { time: "12:30", text: "步入圣彼得大教堂，看米开朗基罗《圣殇》，登顶穹顶俯瞰“钥匙孔”广场。" },
+                                { time: "15:30", text: "走过台伯河畔的圣天使堡。" },
+                                { time: "17:00", text: "深入鲜花广场百年集市，随后至纳沃纳广场看四河喷泉。" }
+                            ], transport: "跨区用单次地铁票，进入老城区后全靠双脚丈量历史。", food: "午餐：秤重卖的罗马薄脆披萨。甜点：Giolitti 百年老店手工开心果 Gelato。", tips: ["CRITICAL: 梵蒂冈博物馆提前60天抢！必须穿盖过膝盖的裤/裙，不可露肩。", "FITNESS: 极限排队与暴走。", "SKIP: 圣彼得大教堂登顶（551级狭窄台阶，幽闭恐惧者建议放弃）。"]
+                        },
+                        {
+                            day: "Day 8", date: "6/4", city: "罗马", timeline: [
+                                { time: "08:00", text: "趁大批游客未醒抵达特雷维喷泉，背对喷泉抛硬币许愿。" },
+                                { time: "09:30", text: "探访万神殿，感受无钢筋混凝土穹顶圆洞透下的神圣光柱。" },
+                                { time: "11:00", text: "打卡《罗马假日》同款西班牙广场阶梯。" },
+                                { time: "14:30", text: "前往测谎仪真理之口。" },
+                                { time: "傍晚", text: "步行至极具波西米亚风情的 Trastevere 区，本地人夜生活后花园。" }
+                            ], transport: "老城区石板路，纯步行。", food: "晚餐：Trastevere区藤蔓缠绕老式餐厅吃黑松露意面。", tips: ["BOOKING: 万神殿周末需提前在官网预约免费票。", "SECURITY: 许愿池拍照时切忌把手机放在池边台阶上。", "SKIP: 真理之口（位置偏且排队久，只为拍张照）。"]
+                        },
+                        {
+                            day: "Day 9", date: "6/5", city: "佛罗伦萨", timeline: [
+                                { time: "08:30", text: "罗马坐高铁，驶入托斯卡纳艳阳下，寻找翡冷翠。" },
+                                { time: "11:00", text: "瞻仰三色大理石拼贴的圣母百花大教堂外观与天堂之门。" },
+                                { time: "14:00", text: "参观乌菲兹美术馆，亲眼凝视波提切利《维纳斯的诞生》。" },
+                                { time: "17:00", text: "走过阿诺河老桥，爬坡登米开朗基罗广场，俯瞰红色屋顶夕阳。" }
+                            ], transport: "罗马 ➔ 佛罗伦萨 (意铁/Italo 1.5h)。提前1月买早鸟票。", food: "午餐：中央市场吃热气腾腾的卤牛肚包。晚餐：终极硬菜 1kg佛罗伦萨T骨牛排(三分熟)。", hotel: "推荐火车站与大教堂之间区域。", tips: ["BOOKING: 乌菲兹美术馆提前3周官网预约。", "FITNESS: 全城极硬石板路，极其费鞋和膝盖。", "SKIP: 米开朗基罗广场（走不动可在阿诺河畔看日落）。"]
+                        },
+                        {
+                            day: "Day 10", date: "6/6", city: "比萨(闪击)", timeline: [
+                                { time: "09:00", text: "参观学院美术馆，看雕塑最高杰作米开朗基罗《大卫》真迹。" },
+                                { time: "11:30", text: "乘慢车赴物理学圣地比萨。" },
+                                { time: "13:00", text: "奇迹广场打卡比萨斜塔，拍推塔错觉照。" },
+                                { time: "16:00", text: "原路返回佛罗伦萨，闲逛圣洛伦佐皮具市场。" }
+                            ], transport: "佛罗伦萨 ➔ 比萨 往返慢车 (各1h)。现场机器买票。", food: "美食：百年老店 Caffè Gilli 站着喝 Espresso。晚餐：野猪肉酱意面。", tips: ["BOOKING: 学院美术馆建议提前2周网购。", "SECURITY: 慢车上吉普赛人多，看管好随身行李。", "SKIP: 圣洛伦佐皮具市场（水深不懂行可直接休息）。"]
+                        }
+                    ]
+                },
+                {
+                    id: "france",
+                    name: "法国",
+                    theme: "蔚蓝海岸的慵懒与巴黎的张弛有度",
+                    strategy: "南法两天作为长途旅行的战略缓冲点彻底回血；随后TGV直达巴黎，在高强度的卢浮宫行程中穿插“呼吸点”，让浪漫不再疲惫。",
+                    days: [
+                        {
+                            day: "Day 11", date: "6/7", city: "尼斯", timeline: [
+                                { time: "上午", text: "佛罗伦萨补漏，逛皮蒂宫或百年药妆店。" },
+                                { time: "下午", text: "飞向法国南部蔚蓝海岸明珠——尼斯。" },
+                                { time: "17:00", text: "沿着英国人漫步大道散步，看渐变蔚蓝色地中海。" }
+                            ], transport: "佛罗伦萨 ➔ 尼斯 (廉航直飞)。机场轻轨L2直达老城。", food: "晚餐：正宗尼斯沙拉 (绝不加煮熟蔬菜) 或地中海海鲜。", hotel: "推荐海滨大道或马塞纳广场周边，推窗即海。", tips: ["VIBE: 享受南法极其治愈的晚风。", "FITNESS: 轻松过渡，车上补觉。", "SKIP: 佛罗伦萨上午补漏（干脆睡懒觉去机场）。"]
+                        },
+                        {
+                            day: "Day 12", date: "6/8", city: "摩纳哥 & 尼斯", timeline: [
+                                { time: "09:00", text: "沿海岸线慢车直达超级富豪微型国家摩纳哥。打卡蒙特卡洛赌场与亲王宫。" },
+                                { time: "14:00", text: "火车返回尼斯。" },
+                                { time: "下午", text: "在老城闲逛或在鹅卵石海滩租躺椅发呆，为巴黎积蓄体力。" }
+                            ], transport: "尼斯 ➔ 摩纳哥 (TER慢车，班次密集)。", food: "美食：尼斯鹰嘴豆薄饼。晚餐：尼斯老城法式小馆。", tips: ["VISA: 摩纳哥凭申根签直接进入，无边检。", "FITNESS: 极度休闲，无需暴走。", "SKIP: 蒙特卡洛赌场内部（门口拍豪车即可，入内需正装验资）。"]
+                        },
+                        {
+                            day: "Day 13", date: "6/9", city: "巴黎", timeline: [
+                                { time: "08:00", text: "坐TGV高铁直达法兰西心脏。" },
+                                { time: "14:00", text: "抵巴黎里昂站，入住酒店。" },
+                                { time: "16:30", text: "直达凯旋门，登顶俯瞰12条大道日落。" },
+                                { time: "18:30", text: "漫步至最华丽的亚历山大三世桥，远眺塞纳河与铁塔闪烁夜景。" }
+                            ], transport: "尼斯 ➔ 巴黎 (TGV高铁 5.5-6h)。沿途欣赏法国乡镇田园风光。", food: "美食：法式可丽饼。晚餐：路边小酒馆点洋葱汤。", hotel: "首选1/2/5/6/7区，绝对避开18/19区北部及巴黎北站。", tips: ["CRITICAL: 巴黎地铁里千万不要站在门边玩手机，门关瞬间会被抢！", "SKIP: 凯旋门登顶（若到巴黎已累，只看外观）。"]
+                        },
+                        {
+                            day: "Day 14", date: "6/10", city: "巴黎", timeline: [
+                                { time: "09:00", text: "高强度死磕卢浮宫。直奔三宝(蒙娜丽莎、胜利女神、维纳斯)与拿破仑套房。" },
+                                { time: "13:30", text: "步入杜乐丽花园，找绿色铁皮躺椅看鸽子发呆。" },
+                                { time: "15:30", text: "看巴黎歌剧院外观，老佛爷感受彩色玻璃穹顶下的时尚氛围。" }
+                            ], transport: "市区买 Navigo Easy 交通卡充单次票。", food: "晚餐：Bouillon Chartier (排队极长、极具氛围感的百年平价法餐)。", tips: ["BOOKING: 卢浮宫必须提前1个月官网预约时间槽！", "FITNESS: 断腿级暴走，馆内极大极易迷路。", "SKIP: 老佛爷购物（若腿已废，直接在花园瘫坐到天黑）。"]
+                        },
+                        {
+                            day: "Day 15", date: "6/11", city: "凡尔赛 & 蒙马特", timeline: [
+                                { time: "08:30", text: "乘RER C线抵凡尔赛宫，参观梦境般的镜厅及后花园。" },
+                                { time: "14:00", text: "返回市区酒店睡午觉平躺回血。" },
+                                { time: "16:30", text: "登艺术气息的蒙马特高地。在爱墙找“我爱你”，在圣心大教堂听手风琴俯瞰巴黎。" }
+                            ], transport: "RER C线去凡尔赛必须单独买跨区票，市区票无效，逃票重罚。", food: "晚餐：蒙马特小丘广场吃法式焗蜗牛与油封鸭。", tips: ["BOOKING: 凡尔赛宫提前官网预定门票与入场时间。", "SECURITY: 圣心堂阶梯下有强行绑红绳的骗子，双手插兜冷脸快走！", "SKIP: 凡尔赛后花园（极大极晒，看精华即可撤）。"]
+                        },
+                        {
+                            day: "Day 16", date: "6/12", city: "巴黎", timeline: [
+                                { time: "10:00", text: "参观火车站改建的奥赛博物馆。印象派天堂，看梵高莫奈。" },
+                                { time: "13:30", text: "塞纳河左岸人文浪漫：沿河步至花神咖啡馆。" },
+                                { time: "15:00", text: "打卡百年文学圣地莎士比亚书店，瞻仰巴黎圣母院外观。" },
+                                { time: "19:00", text: "慵懒乘坐塞纳河游船，看两岸古老建筑亮灯完美收尾。" }
+                            ], transport: "左岸纯靠步行，感受海明威笔下的流动的盛宴。", food: "小吃：随手买刚出炉法棍。晚餐：高级小酒馆红酒炖牛肉。", tips: ["TIMING: 莎士比亚书店常年限流，预留30-40分室外排队。", "FITNESS: 不赶场的慵懒一天。", "SKIP: 莎士比亚书店（若排队超一小时果断放弃，外观拍照）。"]
+                        }
+                    ]
+                },
+                {
+                    id: "uk",
+                    name: "英国",
+                    theme: "雾都的皇家底蕴与高地的魔幻风情",
+                    strategy: "伦敦重温大英帝国辉煌遗迹与皇家风范；爱丁堡体验犹如哈利波特般的暗黑中世纪风，并深入高地寻找水怪。",
+                    days: [
+                        {
+                            day: "Day 17", date: "6/13", city: "伦敦", timeline: [
+                                { time: "08:30", text: "乘欧洲之星穿越英吉利海峡海底隧道。" },
+                                { time: "09:50", text: "抵伦敦圣潘克拉斯站，红砖维多利亚建筑扑面而来。" },
+                                { time: "13:00", text: "直奔文明宝库大英博物馆。核心展品：木乃伊、罗塞塔石碑。" },
+                                { time: "18:00", text: "至伦敦最热闹的考文特花园逛街看魔术。" }
+                            ], transport: "巴黎 ➔ 伦敦 (欧洲之星 2h20m)。英法海关在巴黎站查验，需提前1.5h过关。", food: "晚餐：国菜炸鱼薯条 (撒麦芽醋) + 精酿啤酒。", hotel: "推荐 King's Cross 或金融城交通枢纽。", tips: ["CRITICAL: 欧洲之星调价夸张，提前3-4个月抢早鸟！大英免费但必预约。", "SKIP: 考文特花园（大英极耗神，出来后直接休息）。"]
+                        },
+                        {
+                            day: "Day 18", date: "6/14", city: "伦敦", timeline: [
+                                { time: "09:30", text: "皇家暴走：打卡历代国王加冕的威斯敏斯特大教堂及大本钟。" },
+                                { time: "11:00", text: "前往白金汉宫看皇家卫队换岗。" },
+                                { time: "14:00", text: "乘坐巨大摩天轮伦敦眼俯瞰泰晤士河。" },
+                                { time: "19:00", text: "前往伦敦西区看一场顶级经典音乐剧。" }
+                            ], transport: "无需买卡，直接用带NFC的实体信用卡刷地铁(Tube)，自动计算封顶价。", food: "下午茶：正统英式三层塔。晚餐：中国城简餐。", tips: ["BOOKING: 音乐剧提前在 TodayTix 购买折扣票。", "FITNESS: 皇家与泰晤士河高强度暴走。", "SKIP: 伦敦眼（排队长，在桥上远观拍照更好看）。"]
+                        },
+                        {
+                            day: "Day 19", date: "6/15", city: "爱丁堡", timeline: [
+                                { time: "09:00", text: "参观阴森宏伟的伦敦塔，看女王王冠巨钻，随后走过伦敦塔桥。" },
+                                { time: "12:00", text: "前往博罗市场扫街吃现烤生蚝。" },
+                                { time: "14:30", text: "车站打卡9¾站台。随后坐火车沿东海岸线驶向爱丁堡。" }
+                            ], transport: "伦敦 ➔ 爱丁堡 (LNER东海岸干线 4.5h)。右侧靠窗看北海海景。", food: "晚餐：传统周日烤肉 (Sunday Roast，烤牛肉配约克郡布丁)。", hotel: "推荐皇家一英里老城核心周边。", tips: ["CRITICAL: 火车票提前1-2个月 Trainline 买 Advance 票，当场买贵3倍！", "SKIP: 伦敦塔内部（外围拍塔桥合影，省时间去市场多吃）。"]
+                        },
+                        {
+                            day: "Day 20", date: "6/16", city: "爱丁堡", timeline: [
+                                { time: "09:30", text: "参观建在黑色悬崖死火山上的爱丁堡城堡，俯瞰哥特尖顶。" },
+                                { time: "12:00", text: "漫步历史脊梁皇家一英里及圣吉尔斯大教堂。" },
+                                { time: "15:00", text: "逛色彩斑斓维多利亚街，打卡大象咖啡馆旧址。" },
+                                { time: "17:30", text: "攀登卡尔顿山。在这座“北方雅典”看绝美老城天际线与日落。" }
+                            ], transport: "老城极小，但全是起伏坡道和幽暗阶梯小巷，纯步行。", food: "晚餐：暗黑国菜哈吉斯 (羊杂碎混合燕麦)，吃前配一口威士忌。", tips: ["CRITICAL: 绝不能拉沉重行李箱在老城找酒店！石板路加陡坡会崩溃，直接打车！", "FITNESS: 极限爬坡，极耗脚力。", "SKIP: 卡尔顿山日落（若体力耗尽，直接去酒馆听风笛）。"]
+                        },
+                        {
+                            day: "Day 21", date: "6/17", city: "苏格兰高地", timeline: [
+                                { time: "08:00", text: "大巴逃离城市，开启苏格兰高地与尼斯湖一日游。" },
+                                { time: "白天", text: "途经007取景地格伦科峡谷，看高地长毛牛。抵深邃尼斯湖寻找水怪。" },
+                                { time: "傍晚", text: "返回市区解散。" },
+                                { time: "晚上", text: "钻进有现场音乐的地下威士忌酒馆品鉴。" }
+                            ], transport: "报名当地团，坐舒适中巴听司机讲神话。", food: "晚上点正宗苏格兰单一麦芽威士忌 (推荐泥煤风味)。", tips: ["BOOKING: 高地一日团提前官网预订。", "WEATHER: 极易下雨，必须穿防风防水冲锋衣，雨伞会被妖风吹折。", "SKIP: 晚上酒馆（高地回来晚，可早点回房收拾行李）。"]
+                        },
+                        {
+                            day: "Day 22", date: "6/18", city: "离开", timeline: [
+                                { time: "上午", text: "皇家一英里羊毛店扫货，买100%纯羊绒围巾和黄油饼干伴手礼。" },
+                                { time: "下午", text: "飞回国内，或赴伦敦离境。结束跨越半个欧洲的史诗级拉练！" }
+                            ], transport: "市中心乘 Airlink 100 蓝色大巴，30分钟直达机场。", food: "机场内解决。", tips: ["INFO: 英国已全面取消海外游客退税！无需在机场排队退税。", "SKIP: 纪念品采购（直接去机场免税店买，省去打包麻烦）。"]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const app = document.getElementById('app');
+
+        let html = `
+            <div class="hero">
+                <div class="hero-content">
+                    <span class="label reveal">Epic Journey</span>
+                    <h1 class="reveal">${itinerary.title}</h1>
+                    <p class="reveal">${itinerary.subtitle} · ${itinerary.route}</p>
+                </div>
+            </div>
+            
+            <div class="nav">
+                ${itinerary.countries.map(c => `<a href="#${c.id}">${c.name}</a>`).join('')}
+            </div>
+            
+            <div class="container">
+                <div class="prep-section">
+                    ${itinerary.prep.map(p => `
+                        <div class="prep-card reveal">
+                            <h3>${p.label}</h3>
+                            <p>${processText(p.desc)}</p>
+                        </div>
+                    `).join('')}
+                </div>
+        `;
+
+        itinerary.countries.forEach(country => {
+            html += `
+                <section id="${country.id}" class="country-section">
+                    <div class="country-header reveal">
+                        <span class="label">Destination</span>
+                        <h2>${country.name}</h2>
+                        <p class="theme">${country.theme}</p>
+                        <div class="strategy">${processText(country.strategy)}</div>
+                    </div>
+                    
+                    <div class="country-hero-container reveal">
+                        <img src="${countryImages[country.id]}" alt="${country.name}" class="country-hero-image" loading="lazy" onerror="this.onerror=null; this.src='${fallbackImg}';">
+                    </div>
+            `;
+
+            country.days.forEach(day => {
+                html += `
+                    <div class="day-card reveal">
+                        <div class="day-content">
+                            <div class="day-header">
+                                <h3>${day.day}</h3>
+                                <span class="meta">${day.date} — ${day.city}</span>
+                            </div>
+                            
+                            <div class="timeline">
+                                ${day.timeline.map(t => `
+                                    <div class="timeline-item">
+                                        <span class="time">${t.time}</span>
+                                        <span class="text">${processText(t.text)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="info-grid">
+                                ${day.transport ? `<div class="info-item full"><span class="label">Transport</span><span class="content">${processText(day.transport)}</span></div>` : ''}
+                                ${day.food ? `<div class="info-item"><span class="label">Dining</span><span class="content">${processText(day.food)}</span></div>` : ''}
+                                ${day.hotel ? `<div class="info-item"><span class="label">Stay</span><span class="content">${processText(day.hotel)}</span></div>` : ''}
+                            </div>
+                            
+                            <div class="tips-block">
+                                ${day.tips.map(tip => {
+                    let formatted = tip.replace(/^([A-Z\s]+):/, '<strong>$1:</strong>');
+                    return `<p>${processText(formatted)}</p>`;
+                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</section>`;
+        });
+
+        html += `
+            <div style="text-align: center; padding: 60px 0; border-top: 1px solid var(--border); margin-top: 40px;" class="reveal">
+                <p style="font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; color: var(--text-muted);">Bon Voyage</p>
+            </div>
+            </div>
+        `;
+
+        app.innerHTML = html;
+
+        // PROGRESS BAR
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        });
+
+        // SMOOTH SCROLL NAV
+        document.querySelectorAll('.nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offset = 80;
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = targetElement.getBoundingClientRect().top;
+                    const elementPosition = elementRect - bodyRect;
+
+                    window.scrollTo({
+                        top: elementPosition - offset,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // INTERSECTION OBSERVER FOR REVEAL ANIMATIONS
+        setTimeout(() => {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        obs.unobserve(entry.target); // Reveal only once
+                    }
+                });
+            }, { threshold: 0.05, rootMargin: "0px 0px -10px 0px" });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }, 100);
+    </script>
+</body>
+
+</html>
